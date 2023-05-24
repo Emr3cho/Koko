@@ -1,0 +1,27 @@
+public override bool Contains(PointF point)
+        {
+            return base.Contains(point);
+        }
+
+        public override void DrawSelf(Graphics grfx)
+        {
+            base.DrawSelf(grfx);
+
+            PointF[] triangleCoordinates = {
+
+                new PointF(Rectangle.X,Rectangle.Y),
+                new PointF(Rectangle.X +  Rectangle.Width / 6, Rectangle.Y + Rectangle.Height),
+                new PointF(Rectangle.X + Rectangle.Width / 6 * 5, (Rectangle.Y) + Rectangle.Height),
+                new PointF((Rectangle.X + Rectangle.Width), (Rectangle.Y))
+            };
+            PointF pointE = new Point((int)Rectangle.X + ((int)Rectangle.Width / 2), (int)Rectangle.Y);
+            PointF pointF = new PointF(Rectangle.X + Rectangle.Width / 2, Rectangle.Y + Rectangle.Height / 2);
+
+            PointF pointD = new PointF(Rectangle.X + Rectangle.Width - 16, Rectangle.Y + Rectangle.Height / 2);
+
+            grfx.FillPolygon(new SolidBrush(FillColor), triangleCoordinates);
+            grfx.DrawPolygon(Pens.Black, triangleCoordinates);
+            grfx.DrawLine(Pens.Black, pointE, pointF);
+            grfx.DrawLine(Pens.Black, triangleCoordinates[1], pointF);
+            grfx.DrawLine(Pens.Black, pointF, pointD);
+        }

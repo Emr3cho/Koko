@@ -1,4 +1,33 @@
-public override bool Contains(PointF point)
+1. Button - private void newRectangle_Click(object sender, EventArgs e)
+        {
+            dialogProcessor.AddRandomNewRectangle();
+
+            statusBar.Items[0].Text = "Последно действие: Рисуване на now правоъгълник";
+
+            viewPort.Invalidate();
+        }
+2. Model - public   class NewRectangle : Shape
+    {
+        #region Constructor
+
+        public NewRectangle(RectangleF rect) : base(rect)
+        {
+        }
+
+        public NewRectangle(RectangleShape rectangle) : base(rectangle)
+        {
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Проверка за принадлежност на точка point към правоъгълника.
+        /// В случая на правоъгълник този метод може да не бъде пренаписван, защото
+        /// Реализацията съвпада с тази на абстрактния клас Shape, който проверява
+        /// дали точката е в обхващащия правоъгълник на елемента (а той съвпада с
+        /// елемента в този случай).
+        /// </summary>
+        public override bool Contains(PointF point)
         {
             if (base.Contains(point))
                 // Проверка дали е в обекта само, ако точката е в обхващащия правоъгълник.
@@ -15,8 +44,14 @@ public override bool Contains(PointF point)
         public override void DrawSelf(Graphics grfx)
         {
             base.DrawSelf(grfx);
+
+            // GraphicsState state = grfx.Save();
             // копие на текущата координатна система
 
+            /*  var m = grfx.Transform.Clone();
+
+              m.Multiply(Rotate);
+              grfx.Transform = m;*/
 
             base.RotateShape(grfx);
             grfx.FillRectangle(new SolidBrush(FillColor), Rectangle.X, Rectangle.Y, Rectangle.Width, Rectangle.Height);
@@ -25,15 +60,42 @@ public override bool Contains(PointF point)
             // DOLNA DQSNA
             PointF pointB = new PointF(Rectangle.X + Rectangle.Width, Rectangle.Y + Rectangle.Height);
 
+            /* PointF pointC = new PointF(Rectangle.Y, Rectangle.X);
+             PointF pointD = new PointF(Rectangle.Y + Rectangle.Width, Rectangle.X + Rectangle.Height);*/
+
             // GORNA DQSNA
             PointF pointC = new PointF(Rectangle.Width + Rectangle.X, Rectangle.Y);
             // DOLNA LQWA
             // liniq do sredata
-            PointF pointD = new PointF(Rectangle.X, Rectangle.Y + Rectangle.Height);
+            // PointF pointD = new PointF(Rectangle.X + Rectangle.Width / 2 , Rectangle.Y + Rectangle.Height / 2);
+             PointF pointD = new PointF(Rectangle.X , Rectangle.Y + Rectangle.Height);
 
             grfx.DrawRectangle(Pens.Black, Rectangle.X, Rectangle.Y, Rectangle.Width, Rectangle.Height);
             grfx.DrawLine(Pens.Black, pointA, pointB);
-            grfx.DrawLine(Pens.Black, pointC, pointD);
+            //45, new PointF(rect.Rectangle.Y + rect.Height / 2,rect.Rectangle.X + rect.Width / 2)
+            grfx.DrawLine(Pens.Black,  pointC, pointD);
+
+            // grfx.DrawLine(Pens.Black, -(Rectangle.X),-(Rectangle.Y), -(Rectangle.Width), -(Rectangle.Height));
 
             grfx.ResetTransform();
+            // grfx.Restore(state);
         }
+    }
+}
+
+3. DialogProcessor - public void AddRandomNewRectangle()
+		{
+			Random rnd = new Random();
+			int x = rnd.Next(100, 600);
+			int y = rnd.Next(100, 1000);
+
+			NewRectangle rect = new NewRectangle(new Rectangle(x,y, 150, 100));
+			//var line = new NewLineFirst(new Rectangle(x, y, 100, 200));
+			//var line2 = new NewLineFirst(new Rectangle(-x, -y, 100, 200));
+			rect.FillColor = Color.White;
+			//rect.Rotate.RotateAt(45, new PointF(rect.Rectangle.Y + rect.Height / 2,rect.Rectangle.X + rect.Width / 2));
+
+			ShapeList.Add(rect);
+			//ShapeList.Add(line);
+			//ShapeList.Add(line2);
+		}

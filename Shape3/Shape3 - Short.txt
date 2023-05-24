@@ -1,0 +1,43 @@
+public override bool Contains(PointF point)
+        {
+            var px = point.X;
+            var x = Rectangle.X + (Rectangle.Width / 2);
+            var rx = Rectangle.Width / 2;
+            var py = point.Y;
+            var y = Rectangle.Y + Rectangle.Height / 2;
+            var ry = Rectangle.Height / 2;
+
+
+            if (((Math.Pow(px - x, 2) / Math.Pow(rx, 2)) + (Math.Pow(py - y, 2) / Math.Pow(ry, 2))) <= 1)
+
+                // Проверка дали е в обекта само, ако точката е в обхващащия правоъгълник.
+                // В случая на правоъгълник - директно връщаме true
+                return true;
+            else
+                // Ако не е в обхващащия правоъгълник, то неможе да е в обекта и => false
+                return false;
+        }
+
+        /// <summary>
+        /// Частта, визуализираща конкретния примитив.
+        /// </summary>
+        public override void DrawSelf(Graphics grfx)
+        {
+            base.DrawSelf(grfx);
+            base.RotateShape(grfx);
+
+            var pointC = new PointF(Rectangle.X + 20, Rectangle.Y + 23);
+            var pointD = new PointF(Rectangle.X + Rectangle.Height - 1, Rectangle.Y + Rectangle.Height / 2);
+
+            var pointP = new PointF(Rectangle.X + 1, Rectangle.Y + 75);
+            var pointG = new PointF(Rectangle.X + Rectangle.Height - 22, Rectangle.Y + Rectangle.Height - 22);
+
+
+            grfx.FillEllipse(new SolidBrush(FillColor), Rectangle.X, Rectangle.Y, Rectangle.Width, Rectangle.Height);
+            grfx.DrawEllipse(new Pen(BorderColor), Rectangle.X, Rectangle.Y, Rectangle.Width, Rectangle.Height);
+            grfx.DrawLine(Pens.Black, pointC, pointD);
+            grfx.DrawLine(Pens.Black, pointP, pointG);
+
+
+            grfx.ResetTransform();
+        }

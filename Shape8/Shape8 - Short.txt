@@ -1,0 +1,37 @@
+public override bool Contains(PointF point)
+        {
+            if (base.Contains(point))
+                // Проверка дали е в обекта само, ако точката е в обхващащия правоъгълник.
+                // В случая на правоъгълник - директно връщаме true
+                return true;
+            else
+                // Ако не е в обхващащия правоъгълник, то неможе да е в обекта и => false
+                return false;
+        }
+
+        /// <summary>
+        /// Частта, визуализираща конкретния примитив.
+        /// </summary>
+        public override void DrawSelf(Graphics grfx)
+        {
+            base.DrawSelf(grfx);
+            PointF[] rhombusCoordinates = {
+                new PointF(Rectangle.X, Rectangle.Y + Rectangle.Height / 2),
+                new PointF(Rectangle.X + Rectangle.Width / 2, Rectangle.Y),
+                new PointF(Rectangle.X + Rectangle.Width, Rectangle.Y + Rectangle.Height / 2),
+                new PointF(Rectangle.X + Rectangle.Width / 2, Rectangle.Y + Rectangle.Height),
+                new PointF(Rectangle.X, Rectangle.Y + Rectangle.Height / 2)
+            };
+
+            var pointA = new PointF(Rectangle.X, Rectangle.Y + Rectangle.Width / 2);
+            var pointB = new PointF(Rectangle.X + Rectangle.Width, Rectangle.Y + Rectangle.Height / 2);
+
+            var pointE = new PointF(Rectangle.X + Rectangle.Width / 2, Rectangle.Y + Rectangle.Height / 2);
+            var pointF = new PointF(Rectangle.X + Rectangle.Height / 2, Rectangle.Y + Rectangle.Height);
+            base.RotateShape(grfx);
+            grfx.FillPolygon(new SolidBrush(FillColor), rhombusCoordinates);
+            grfx.DrawPolygon(Pens.Black, rhombusCoordinates);
+
+            grfx.DrawLine(Pens.Black, pointA, pointB);
+            grfx.DrawLine(Pens.Black, pointE, pointF);
+        }
