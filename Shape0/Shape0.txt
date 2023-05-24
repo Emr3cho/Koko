@@ -1,0 +1,95 @@
+1. MainForm -   private void triangleBtn_Click(object sender, EventArgs e)
+        {
+            dialogProcessor.AddRandomTriangle();
+
+            statusBar.Items[0].Text = "Последно действие: Рисуване на now триъгълник";
+
+            viewPort.Invalidate();
+        }
+
+2. Model -  public  class Triangle  :Shape
+    {
+        public Triangle(RectangleF rec): base(rec)
+        {
+
+        }
+        public Triangle(Triangle triangle)  : base(triangle)
+        {
+
+        }
+
+        public override bool Contains(PointF point)
+        {
+            if (base.Contains(point))
+                // Проверка дали е в обекта само, ако точката е в обхващащия правоъгълник.
+                // В случая на правоъгълник - директно връщаме true
+                return true;
+            else
+                // Ако не е в обхващащия правоъгълник, то неможе да е в обекта и => false
+                return false;
+        }
+
+        /// <summary>
+        /// Частта, визуализираща конкретния примитив.
+        /// </summary>
+        public override void DrawSelf(Graphics grfx)
+        {
+            base.DrawSelf(grfx);
+
+            // GraphicsState state = grfx.Save();
+            // копие на текущата координатна система
+
+            /*  var m = grfx.Transform.Clone();
+
+              m.Multiply(Rotate);
+              grfx.Transform = m;*/
+
+            base.RotateShape(grfx);
+            PointF[] triangleCoordinates = {
+
+                new Point((int)Rectangle.X + ((int)Rectangle.Width / 2), (int)Rectangle.Y),
+                new Point((int)Rectangle.X, (int)(Rectangle.Y + Rectangle.Height)),
+                new Point((int)(Rectangle.X + Rectangle.Width), (int)(Rectangle.Y + Rectangle.Height))
+            };
+
+            // liniq do polowinata na gorna dqsna
+             PointF pointD = new PointF(Rectangle.X + Rectangle.Width / 2 , Rectangle.Y + Rectangle.Height / 2);
+            PointF pointC = new PointF(Rectangle.X, Rectangle.Y + Rectangle.Height);
+
+            // liniq do polowinata na gorna lqwa
+            PointF pointA = new PointF(Rectangle.X  + Rectangle.Width, Rectangle.Y + Rectangle.Height);
+            PointF pointB = new PointF(Rectangle.X + Rectangle.Width / 2, Rectangle.Y + Rectangle.Height / 2 );
+
+            // liniq do polowinata na centralna
+            PointF pointE = new Point((int)Rectangle.X + ((int)Rectangle.Width / 2), (int)Rectangle.Y);
+
+
+            PointF pointF = new PointF(Rectangle.X + Rectangle.Width / 2, Rectangle.Y + Rectangle.Height / 2);
+            grfx.FillPolygon(new SolidBrush(FillColor), triangleCoordinates);
+            grfx.DrawPolygon(Pens.Black, triangleCoordinates);
+
+            grfx.DrawLine(Pens.Black, pointC, pointD);
+            grfx.DrawLine(Pens.Black, pointB, pointA);
+            grfx.DrawLine(Pens.Black, pointE, pointF);
+
+            grfx.ResetTransform();
+            // grfx.Restore(state);
+        }
+    }
+}
+
+
+3. DialogProcessor - public void AddRandomTriangle()
+		{
+			Random rnd = new Random();
+			int x = rnd.Next(100, 1000);
+			int y = rnd.Next(100, 600);
+
+			Triangle triangle = new Triangle(new Rectangle(x, y, 250, 150));
+
+
+			triangle.FillColor = Color.FromArgb(128, 0, 0, 255);
+			triangle.Rotate.RotateAt(45, new PointF(triangle.Rectangle.X + triangle.Width / 2, triangle.Rectangle.Y + triangle.Height / 2));
+
+			ShapeList.Add(triangle);
+		}

@@ -1,0 +1,39 @@
+public override bool Contains(PointF point)
+        {
+            if (base.Contains(point))
+                // Проверка дали е в обекта само, ако точката е в обхващащия правоъгълник.
+                // В случая на правоъгълник - директно връщаме true
+                return true;
+            else
+                // Ако не е в обхващащия правоъгълник, то неможе да е в обекта и => false
+                return false;
+        }
+
+        /// <summary>
+        /// Частта, визуализираща конкретния примитив.
+        /// </summary>
+        public override void DrawSelf(Graphics grfx)
+        {
+            base.DrawSelf(grfx);
+            // копие на текущата координатна система
+
+
+            base.RotateShape(grfx);
+            grfx.FillRectangle(new SolidBrush(FillColor), Rectangle.X, Rectangle.Y, Rectangle.Width, Rectangle.Height);
+            // GORNA LQWA
+            PointF pointA = new PointF(Rectangle.X, Rectangle.Y);
+            // DOLNA DQSNA
+            PointF pointB = new PointF(Rectangle.X + Rectangle.Width, Rectangle.Y + Rectangle.Height);
+
+            // GORNA DQSNA
+            PointF pointC = new PointF(Rectangle.Width + Rectangle.X, Rectangle.Y);
+            // DOLNA LQWA
+            // liniq do sredata
+            PointF pointD = new PointF(Rectangle.X, Rectangle.Y + Rectangle.Height);
+
+            grfx.DrawRectangle(Pens.Black, Rectangle.X, Rectangle.Y, Rectangle.Width, Rectangle.Height);
+            grfx.DrawLine(Pens.Black, pointA, pointB);
+            grfx.DrawLine(Pens.Black, pointC, pointD);
+
+            grfx.ResetTransform();
+        }

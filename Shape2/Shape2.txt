@@ -1,0 +1,103 @@
+1. MainForm -  private void newRectangle2_Click(object sender, EventArgs e)
+        {
+            dialogProcessor.AddRandomNewRectangle2();
+
+            statusBar.Items[0].Text = "Последно действие: Рисуване на now правоъгълник";
+
+            viewPort.Invalidate();
+        }
+
+2. Model -  public   class NewRectangle2 : Shape
+    {
+        #region Constructor
+
+        public NewRectangle2(RectangleF rect) : base(rect)
+        {
+        }
+
+        public NewRectangle2(NewRectangle2 rectangle) : base(rectangle)
+        {
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Проверка за принадлежност на точка point към правоъгълника.
+        /// В случая на правоъгълник този метод може да не бъде пренаписван, защото
+        /// Реализацията съвпада с тази на абстрактния клас Shape, който проверява
+        /// дали точката е в обхващащия правоъгълник на елемента (а той съвпада с
+        /// елемента в този случай).
+        /// </summary>
+        public override bool Contains(PointF point)
+        {
+            if (base.Contains(point))
+                // Проверка дали е в обекта само, ако точката е в обхващащия правоъгълник.
+                // В случая на правоъгълник - директно връщаме true
+                return true;
+            else
+                // Ако не е в обхващащия правоъгълник, то неможе да е в обекта и => false
+                return false;
+        }
+
+        /// <summary>
+        /// Частта, визуализираща конкретния примитив.
+        /// </summary>
+        public override void DrawSelf(Graphics grfx)
+        {
+            base.DrawSelf(grfx);
+
+            // GraphicsState state = grfx.Save();
+            // копие на текущата координатна система
+
+            /*  var m = grfx.Transform.Clone();
+
+              m.Multiply(Rotate);
+              grfx.Transform = m;*/
+
+            base.RotateShape(grfx);
+            grfx.FillRectangle(new SolidBrush(FillColor), Rectangle.X, Rectangle.Y, Rectangle.Width, Rectangle.Height);
+            grfx.DrawRectangle(Pens.Black, Rectangle.X, Rectangle.Y, Rectangle.Width, Rectangle.Height);
+            grfx.ResetTransform();
+            // grfx.Restore(state);
+
+            // GORNA LQWA
+            PointF pointA = new PointF(Rectangle.X, Rectangle.Y);
+            // DOLNA DQSNA
+            PointF pointB = new PointF(Rectangle.X + Rectangle.Width / 2, Rectangle.Y + Rectangle.Height / 2);
+
+            /* PointF pointC = new PointF(Rectangle.Y, Rectangle.X);
+             PointF pointD = new PointF(Rectangle.Y + Rectangle.Width, Rectangle.X + Rectangle.Height);*/
+
+            // GORNA DQSNA
+            PointF pointD = new PointF(Rectangle.Width + Rectangle.X, Rectangle.Y + Rectangle.Height / 2);
+            // Rectangle.Width + Rectangle.X, Rectangle.Y
+            // liniq do sredata
+            // PointF pointD = new PointF(Rectangle.X + Rectangle.Width / 2 , Rectangle.Y + Rectangle.Height / 2);
+            // DOLNA LQWA
+            PointF pointC = new PointF(Rectangle.X, Rectangle.Y + Rectangle.Height);
+
+            grfx.DrawRectangle(Pens.Black, Rectangle.X, Rectangle.Y, Rectangle.Width, Rectangle.Height);
+            grfx.DrawLine(Pens.Black, pointA, pointB);
+            //45, new PointF(rect.Rectangle.Y + rect.Height / 2,rect.Rectangle.X + rect.Width / 2)
+            grfx.DrawLine(Pens.Black, pointB, pointC);
+            grfx.DrawLine(Pens.Black, pointB,pointD);
+        }
+    }
+}
+
+3. DialogProcessor - public void AddRandomNewRectangle2()
+		{
+			Random rnd = new Random();
+			int x = rnd.Next(100, 600);
+			int y = rnd.Next(100, 1000);
+
+			NewRectangle2 rect = new NewRectangle2(new Rectangle(x, y, 150, 100));
+			//var line = new NewLineFirst(new Rectangle(x, y, 100, 200));
+			//var line2 = new NewLineFirst(new Rectangle(-x, -y, 100, 200));
+			rect.FillColor = Color.White;
+			//rect.Rotate.RotateAt(45, new PointF(rect.Rectangle.Y + rect.Height / 2,rect.Rectangle.X + rect.Width / 2));
+
+			ShapeList.Add(rect);
+			//ShapeList.Add(line);
+			//ShapeList.Add(line2);
+		}

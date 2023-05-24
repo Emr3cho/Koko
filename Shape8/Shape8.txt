@@ -1,0 +1,98 @@
+1. MainForm -  void squareBtn_Click(object sender, EventArgs e)
+        {
+            dialogProcessor.AddRandomSquare();
+
+            statusBar.Items[0].Text = "Последно действие: Рисуване на now квадрат";
+
+            viewPort.Invalidate();
+        }
+
+2. Model -  public class Square : Shape
+    {
+        #region Constructor
+
+        public Square(RectangleF rect) : base(rect)
+        {
+        }
+
+        public Square(RectangleShape square) : base(square)
+        {
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Проверка за принадлежност на точка point към правоъгълника.
+        /// В случая на правоъгълник този метод може да не бъде пренаписван, защото
+        /// Реализацията съвпада с тази на абстрактния клас Shape, който проверява
+        /// дали точката е в обхващащия правоъгълник на елемента (а той съвпада с
+        /// елемента в този случай).
+        /// </summary>
+        public override bool Contains(PointF point)
+        {
+            if (base.Contains(point))
+                // Проверка дали е в обекта само, ако точката е в обхващащия правоъгълник.
+                // В случая на правоъгълник - директно връщаме true
+                return true;
+            else
+                // Ако не е в обхващащия правоъгълник, то неможе да е в обекта и => false
+                return false;
+        }
+
+        /// <summary>
+        /// Частта, визуализираща конкретния примитив.
+        /// </summary>
+        public override void DrawSelf(Graphics grfx)
+        {
+            base.DrawSelf(grfx);
+
+            // GraphicsState state = grfx.Save();
+            // копие на текущата координатна система
+
+            /*  var m = grfx.Transform.Clone();
+
+              m.Multiply(Rotate);
+              grfx.Transform = m;*/
+            PointF[] rhombusCoordinates = {
+                /*
+                new PointF(Rectangle.X,Rectangle.Y + Rectangle.Height / 2),
+                new PointF(Rectangle.X, Rectangle.Y + Rectangle.Width / 2),
+                new PointF(Rectangle.X + Rectangle.Width, Rectangle.Y + Rectangle.Height / 2),
+                new PointF(Rectangle.X + Rectangle.Width / 2, Rectangle.Y)*/
+
+                  new PointF(Rectangle.X, Rectangle.Y + Rectangle.Height / 2),
+      new PointF(Rectangle.X + Rectangle.Width / 2, Rectangle.Y),
+      new PointF(Rectangle.X + Rectangle.Width, Rectangle.Y + Rectangle.Height / 2),
+      new PointF(Rectangle.X + Rectangle.Width / 2, Rectangle.Y + Rectangle.Height),
+      new PointF(Rectangle.X, Rectangle.Y + Rectangle.Height / 2)
+            };
+            
+            var pointA = new PointF(Rectangle.X, Rectangle.Y + Rectangle.Width / 2);
+            var pointB = new PointF(Rectangle.X + Rectangle.Width, Rectangle.Y + Rectangle.Height / 2);
+
+            var pointE = new PointF(Rectangle.X + Rectangle.Width / 2, Rectangle.Y + Rectangle.Height / 2);
+            var pointF = new PointF(Rectangle.X + Rectangle.Height / 2, Rectangle.Y + Rectangle.Height);
+            base.RotateShape(grfx);
+            grfx.FillPolygon(new SolidBrush(FillColor), rhombusCoordinates);
+            grfx.DrawPolygon(Pens.Black, rhombusCoordinates);
+
+             grfx.DrawLine(Pens.Black, pointA, pointB);
+             grfx.DrawLine(Pens.Black, pointE, pointF);
+        }
+    }
+}
+
+
+3. DialogProcessor - public void AddRandomSquare()
+		{
+			Random rnd = new Random();
+			int x = rnd.Next(100, 600);
+			int y = rnd.Next(100, 600);
+
+			Square square = new Square(new Rectangle(x , y , 150, 150));
+
+			square.FillColor = Color.FromArgb(128, 0, 0, 255);
+			square.Rotate.RotateAt(45, new PointF(square.Rectangle.X + square.Width / 2, square.Rectangle.Y + square.Height / 2));
+
+			ShapeList.Add(square);
+		}
