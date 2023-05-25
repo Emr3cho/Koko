@@ -17,9 +17,6 @@
             base.DrawSelf(grfx);
 
             base.RotateShape(grfx);
-            grfx.FillRectangle(new SolidBrush(FillColor), Rectangle.X, Rectangle.Y, Rectangle.Width, Rectangle.Height);
-            grfx.DrawRectangle(Pens.Black, Rectangle.X, Rectangle.Y, Rectangle.Width, Rectangle.Height);
-            grfx.ResetTransform();
 
             PointF pointA = new PointF(Rectangle.X, Rectangle.Y);
 
@@ -28,8 +25,10 @@
             PointF pointD = new PointF(Rectangle.Width + Rectangle.X, Rectangle.Y + Rectangle.Height / 2);
             PointF pointC = new PointF(Rectangle.X, Rectangle.Y + Rectangle.Height);
 
+            grfx.FillRectangle(new SolidBrush(FillColor), Rectangle.X, Rectangle.Y, Rectangle.Width, Rectangle.Height);
             grfx.DrawRectangle(Pens.Black, Rectangle.X, Rectangle.Y, Rectangle.Width, Rectangle.Height);
             grfx.DrawLine(Pens.Black, pointA, pointB);
             grfx.DrawLine(Pens.Black, pointB, pointC);
             grfx.DrawLine(Pens.Black, pointB, pointD);
+            grfx.ResetTransform();
         }
